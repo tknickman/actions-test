@@ -44,3 +44,4 @@ async function post() {
         core.warning(error.message);
     }
 }
+post();

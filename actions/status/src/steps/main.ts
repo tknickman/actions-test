@@ -8,3 +8,5 @@ export async function main(): Promise<void> {
     core.setFailed((error as Error).message);
   }
 }
+
+main();

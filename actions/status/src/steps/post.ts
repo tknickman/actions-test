@@ -8,3 +8,5 @@ export async function post(): Promise<void> {
     core.warning((error as Error).message);
   }
 }
+
+post();
