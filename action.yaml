@@ -16,7 +16,7 @@ inputs:
     description: "Path to the workflow file to run (mutually exclusive with command)"
     required: false
   workflow-inputs:
-    description: 'JSON string of workflow inputs (e.g. ''{"sha":"abc123","env":"prod"}'')'
+    description: 'JSON string of workflow inputs (e.g. ''{"sha":"abc123"}'')'
     required: false
   checkout-path:
     description: "The path to checkout the repository to"
@@ -55,7 +55,8 @@ runs:
         elif [ -n "${{ inputs.workflow-path }}" ]; then
           echo "Executing workflow: ${{ inputs.workflow-path }}"
           if [ -n "${{ inputs.workflow-inputs }}" ]; then
-            echo "${{ inputs.workflow-inputs }}" | gh workflow run "${{ inputs.workflow-path }}" --json
+            # Ensure the JSON is properly formatted
+            echo "${{ inputs.workflow-inputs }}" | jq '.' | gh workflow run "${{ inputs.workflow-path }}" --json
           else
             gh workflow run "${{ inputs.workflow-path }}"
           fi

@@ -14,10 +14,15 @@ jobs:
           # ref: ${{ github.event.client_payload.git.sha }}
           fetch-depth: 1
 
+      - name: Prepare workflow inputs
+        id: prepare
+        run: |
+          echo "inputs=$(echo '{"sha":"'${{ github.event.client_payload.git.sha }}'"}' | jq -c '.')" >> $GITHUB_OUTPUT
+
       - uses: ./
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           status-name: "Test Deployment"
           workflow-path: ".github/workflows/test-deployment.yml"
-          workflow-inputs: '{"sha":"${{ github.event.client_payload.git.sha }}"}'
+          workflow-inputs: ${{ steps.prepare.outputs.inputs }}
