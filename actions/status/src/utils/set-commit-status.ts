@@ -41,7 +41,7 @@ export async function setCommitStatus({
   core.info(`context.job: ${context.job}`);
   core.info(`context.workflow: ${context.workflow}`);
   core.info(`context.eventName: ${context.eventName}`);
-  core.info(`context.payload: ${JSON.stringify(context.payload, null, 2)}`);
+  core.info(`context.token: ${token}`);
 
   const jobs = await octokit.rest.actions.listJobsForWorkflowRun({
     owner: context.repo.owner,
@@ -50,6 +50,8 @@ export async function setCommitStatus({
     filter: "latest",
     per_page: 100,
   });
+
+  core.info(`jobs: ${JSON.stringify(jobs, null, 2)}`);
 
   const octokitJob = jobs.data.jobs.find(
     (j: { name: string }) => j.name === context.job
