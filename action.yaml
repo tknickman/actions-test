@@ -34,7 +34,7 @@ runs:
           -f context="${{ inputs.status-name }}" \
           -f description="Command is running..."
       env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
+        GH_TOKEN: ${{ inputs.github-token }}
 
     - name: Run the command
       id: run_command
@@ -53,7 +53,7 @@ runs:
           -f context="${{ inputs.status-name }}" \
           -f description="Command succeeded!"
       env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
+        GH_TOKEN: ${{ inputs.github-token }}
 
     - name: Set status to failure
       if: failure()
@@ -64,4 +64,4 @@ runs:
           -f context="${{ inputs.status-name }}" \
           -f description="Command failed!"
       env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
+        GH_TOKEN: ${{ inputs.github-token }}
