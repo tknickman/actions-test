@@ -58,38 +58,7 @@ export async function setCommitStatus({
       })) || [],
   };
 
-  const allJobsCompleted = jobs.data.jobs.every(
-    (job) => job.status === "completed"
-  );
-
-  if (stage === "post" && !allJobsCompleted) {
-    core.info("Waiting for all jobs to complete...");
-    // Wait for all jobs to complete using Promise and setTimeout
-    await new Promise<void>((resolve) => {
-      const checkCompletion = async () => {
-        const updatedJobs = await octokit.rest.actions.listJobsForWorkflowRun({
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          run_id: context.runId,
-          filter: "latest",
-          per_page: 100,
-        });
-
-        const allJobsCompleted = updatedJobs.data.jobs.every(
-          (job) => job.status === "completed"
-        );
-
-        if (allJobsCompleted) {
-          resolve();
-        } else {
-          setTimeout(checkCompletion, 1500);
-        }
-      };
-
-      checkCompletion();
-    });
-  }
-
+  // debug job
   const state = getStatusForJob({ stage, job });
   core.info(`Setting commit status for SHA: ${sha}, state: ${state}`);
 

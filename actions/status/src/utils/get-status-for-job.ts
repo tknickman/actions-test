@@ -7,7 +7,7 @@ export function getStatusForJob({
   stage: WorkflowStage;
   job: Job;
 }): Status {
-  if (stage === "post") {
+  if (stage !== "post") {
     return "pending";
   }
   const failedStep = job.steps.find((step) => step.conclusion === "failure");
