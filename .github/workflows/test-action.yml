@@ -26,6 +26,8 @@ jobs:
       - run: pnpm install
 
       - uses: ./
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           status-name: "Test Deployment"
           command: 'echo "Testing deployment with SHA: ${{ github.event.client_payload.git.sha }}"'
