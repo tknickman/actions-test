@@ -26,7 +26,5 @@ jobs:
         run: pnpm install
 
       - uses: ./actions/status
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
