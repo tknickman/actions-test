@@ -4,7 +4,7 @@
   "description": "GitHub action that sets the status of the workflow on the sha received from a repository_dispatch event",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
     "prepare": "pnpm run build"
   },
   "author": "Vercel",
@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "tsup": "^8.5.0",
     "typescript": "^5.3.0"
   }
 }
