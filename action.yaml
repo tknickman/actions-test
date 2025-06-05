@@ -25,10 +25,6 @@ runs:
   steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      with:
-        ref: ${{ github.event.client_payload.git.sha }}
-        path: ${{ inputs.checkout-path }}
-        fetch-depth: ${{ inputs.checkout-fetch-depth }}
 
     - name: Set status to pending
       shell: bash
