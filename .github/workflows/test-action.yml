@@ -23,6 +23,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          status-name: "Test Deployment"
-          workflow-path: ".github/workflows/test-deployment.yml"
-          workflow-inputs: ${{ steps.prepare.outputs.inputs }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
