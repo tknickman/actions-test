@@ -1,0 +1,21 @@
+name: "Set Status and Run Command"
+description: "Sets a status on HEAD, runs a command, and updates status based on success or failure"
+author: "Vercel"
+inputs:
+  status-name:
+    description: "The context name for the status"
+    required: true
+  command:
+    description: "The command to run"
+    required: true
+runs:
+  using: "node20"
+  main: "dist/index.js"
+  pre:
+    using: "composite"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.client_payload.git.sha }}
+          path: ${{ inputs.checkout-path }}
+          fetch-depth: ${{ inputs.checkout-fetch-depth }}

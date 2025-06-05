@@ -1,0 +1,15 @@
+name: Test Action with Repository Dispatch
+
+on:
+  repository_dispatch:
+    types: 
+      - vercel.deployment.success
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./
+        with:
+          status-name: "Test Deployment"
+          command: 'echo "Testing deployment with SHA: ${{ github.event.client_payload.git.sha }}"'
