@@ -26,6 +26,8 @@ export async function setCommitStatus({
   }
 
   const token = core.getInput("github_token");
+  const contextForStatus =
+    core.getInput("name") ?? `${context.workflow} / ${context.job}`;
   const octokit = github.getOctokit(token);
 
   if (stage === "post") {
@@ -67,7 +69,7 @@ export async function setCommitStatus({
     repo: context.repo.repo,
     sha,
     state,
-    context: `${context.workflow} / ${context.job}`,
+    context: contextForStatus,
     target_url: octokitJob.html_url || undefined,
   });
 
