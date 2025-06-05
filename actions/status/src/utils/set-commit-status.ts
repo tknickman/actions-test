@@ -34,15 +34,6 @@ export async function setCommitStatus({
     await wait(5 * 1000);
   }
 
-  // debug items:
-  core.info(`context.repo.owner: ${context.repo.owner}`);
-  core.info(`context.repo.repo: ${context.repo.repo}`);
-  core.info(`context.runId: ${context.runId}`);
-  core.info(`context.job: ${context.job}`);
-  core.info(`context.workflow: ${context.workflow}`);
-  core.info(`context.eventName: ${context.eventName}`);
-  core.info(`context.token: ${token}`);
-
   const jobs = await octokit.rest.actions.listJobsForWorkflowRun({
     owner: context.repo.owner,
     repo: context.repo.repo,
@@ -52,7 +43,6 @@ export async function setCommitStatus({
   });
 
   core.info(`jobs: ${JSON.stringify(jobs, null, 2)}`);
-
   const octokitJob = jobs.data.jobs.find(
     (j: { name: string }) => j.name === context.job
   );
@@ -68,8 +58,39 @@ export async function setCommitStatus({
       })) || [],
   };
 
-  const state = getStatusForJob({ stage, job });
+  const allJobsCompleted = jobs.data.jobs.every(
+    (job) => job.status === "completed"
+  );
 
+  if (stage === "post" && !allJobsCompleted) {
+    core.info("Waiting for all jobs to complete...");
+    // Wait for all jobs to complete using Promise and setTimeout
+    await new Promise<void>((resolve) => {
+      const checkCompletion = async () => {
+        const updatedJobs = await octokit.rest.actions.listJobsForWorkflowRun({
+          owner: context.repo.owner,
+          repo: context.repo.repo,
+          run_id: context.runId,
+          filter: "latest",
+          per_page: 100,
+        });
+
+        const allJobsCompleted = updatedJobs.data.jobs.every(
+          (job) => job.status === "completed"
+        );
+
+        if (allJobsCompleted) {
+          resolve();
+        } else {
+          setTimeout(checkCompletion, 1500);
+        }
+      };
+
+      checkCompletion();
+    });
+  }
+
+  const state = getStatusForJob({ stage, job });
   core.info(`Setting commit status for SHA: ${sha}, state: ${state}`);
 
   const resp = await octokit.rest.repos.createCommitStatus({
