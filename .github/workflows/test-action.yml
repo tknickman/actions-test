@@ -28,3 +28,13 @@ jobs:
       - uses: ./actions/status
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Action that failes
+        run: |
+          echo "This is a test"
+          exit 1
+
+      - name: Action that passes
+        run: |
+          echo "This is a test"
+          exit 0
