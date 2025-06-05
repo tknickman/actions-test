@@ -15,8 +15,8 @@ inputs:
   workflow-path:
     description: "Path to the workflow file to run (mutually exclusive with command)"
     required: false
-  workflow-args:
-    description: "Arguments to pass to the workflow"
+  workflow-inputs:
+    description: 'JSON string of workflow inputs (e.g. ''{"sha":"abc123","env":"prod"}'')'
     required: false
   checkout-path:
     description: "The path to checkout the repository to"
@@ -54,7 +54,11 @@ runs:
           eval "${{ inputs.command }}"
         elif [ -n "${{ inputs.workflow-path }}" ]; then
           echo "Executing workflow: ${{ inputs.workflow-path }}"
-          gh workflow run "${{ inputs.workflow-path }}" ${{ inputs.workflow-args }}
+          if [ -n "${{ inputs.workflow-inputs }}" ]; then
+            echo "${{ inputs.workflow-inputs }}" | gh workflow run "${{ inputs.workflow-path }}" --json
+          else
+            gh workflow run "${{ inputs.workflow-path }}"
+          fi
         else
           echo "Error: Either command or workflow-path must be provided"
           exit 1

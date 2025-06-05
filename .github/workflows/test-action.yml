@@ -20,4 +20,4 @@ jobs:
         with:
           status-name: "Test Deployment"
           workflow-path: ".github/workflows/test-deployment.yml"
-          workflow-args: "--sha ${{ github.event.client_payload.git.sha }}"
+          workflow-inputs: '{"sha":"${{ github.event.client_payload.git.sha }}"}'
