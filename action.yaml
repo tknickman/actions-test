@@ -1,31 +1,42 @@
-name: 'Set Status and Run Command (Composite)'
-description: 'Sets a status on HEAD, checks out code, runs a command, updates status based on success/failure'
-author: 'Your Name'
+name: "Set Status and Run Command (Composite)"
+description: "Sets a status on HEAD, checks out code, runs a command, updates status based on success/failure"
+author: "Your Name"
 
 inputs:
   github-token:
-    description: 'GitHub token for setting the status'
+    description: "GitHub token for setting the status"
     required: true
   status-name:
-    description: 'The context name for the status'
+    description: "The context name for the status"
     required: true
   command:
-    description: 'The shell command to run'
+    description: "The shell command to run"
     required: true
+  checkout-path:
+    description: "The path to checkout the repository to"
+    required: false
+  checkout-fetch-depth:
+    description: "Number of commits to fetch. 0 indicates all history for all branches and tags"
+    required: false
+    default: "1"
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      shell: bash
       with:
         ref: ${{ github.event.client_payload.git.sha }}
+        path: ${{ inputs.checkout-path }}
+        fetch-depth: ${{ inputs.checkout-fetch-depth }}
 
     - name: Set status to pending
+      shell: bash
       run: |
         gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
           -f state="pending" \
-          -f context="${{ inputs.context-name }}" \
+          -f context="${{ inputs.status-name }}" \
           -f description="Command is running..."
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
@@ -40,20 +51,22 @@ runs:
 
     - name: Set status to success
       if: success()
+      shell: bash
       run: |
         gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
           -f state="success" \
-          -f context="${{ inputs.context-name }}" \
+          -f context="${{ inputs.status-name }}" \
           -f description="Command succeeded!"
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
 
     - name: Set status to failure
       if: failure()
+      shell: bash
       run: |
         gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
           -f state="failure" \
-          -f context="${{ inputs.context-name }}" \
+          -f context="${{ inputs.status-name }}" \
           -f description="Command failed!"
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
