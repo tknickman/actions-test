@@ -1,0 +1,30 @@
+name: Test Deployment Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: "The SHA of the deployment"
+        required: true
+        type: string
+
+jobs:
+  test-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.sha }}
+          fetch-depth: 1
+
+      - name: Echo deployment info
+        run: |
+          echo "Testing deployment with SHA: ${{ github.event.inputs.sha }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Event type: ${{ github.event_name }}"
+
+      - name: Simulate failure
+        run: |
+          echo "Simulating a failure..."
+          exit 1

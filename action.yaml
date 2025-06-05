@@ -1,5 +1,5 @@
 name: "Set Status and Run Command (Composite)"
-description: "Sets a status on HEAD, checks out code, runs a command, updates status based on success/failure"
+description: "Sets a status on HEAD, checks out code, runs a command or workflow, updates status based on success/failure"
 author: "Your Name"
 
 inputs:
@@ -8,10 +8,16 @@ inputs:
     required: true
   status-name:
     description: "The context name for the status"
-    required: true
+    required: false
   command:
-    description: "The shell command to run"
-    required: true
+    description: "The shell command to run (mutually exclusive with workflow-path)"
+    required: false
+  workflow-path:
+    description: "Path to the workflow file to run (mutually exclusive with command)"
+    required: false
+  workflow-args:
+    description: "Arguments to pass to the workflow"
+    required: false
   checkout-path:
     description: "The path to checkout the repository to"
     required: false
@@ -27,6 +33,7 @@ runs:
       uses: actions/checkout@v4
 
     - name: Set status to pending
+      if: ${{ inputs.status-name != '' }}
       shell: bash
       run: |
         gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
@@ -36,16 +43,25 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.github-token }}
 
-    - name: Run the command
+    - name: Run the command or workflow
       id: run_command
+      if: ${{ inputs.command != '' || inputs.workflow-path != '' }}
       shell: bash
       run: |
         set -o pipefail
-        echo "Executing: ${{ inputs.command }}"
-        eval "${{ inputs.command }}"
+        if [ -n "${{ inputs.command }}" ]; then
+          echo "Executing command: ${{ inputs.command }}"
+          eval "${{ inputs.command }}"
+        elif [ -n "${{ inputs.workflow-path }}" ]; then
+          echo "Executing workflow: ${{ inputs.workflow-path }}"
+          gh workflow run "${{ inputs.workflow-path }}" ${{ inputs.workflow-args }}
+        else
+          echo "Error: Either command or workflow-path must be provided"
+          exit 1
+        fi
 
     - name: Set status to success
-      if: success()
+      if: success() && ${{ inputs.status-name != '' }}
       shell: bash
       run: |
         gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
@@ -56,7 +72,7 @@ runs:
         GH_TOKEN: ${{ inputs.github-token }}
 
     - name: Set status to failure
-      if: failure()
+      if: failure() && ${{ inputs.status-name != '' }}
       shell: bash
       run: |
         gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
