@@ -72,7 +72,7 @@ async function run() {
         if (!token) {
             throw new Error("GITHUB_TOKEN is not set in environment variables.");
         }
-        const contextName = core.getInput("context-name", { required: true });
+        const contextName = core.getInput("status-name", { required: true });
         const command = core.getInput("command", { required: true });
         const octokit = github.getOctokit(token);
         // Set the status to pending

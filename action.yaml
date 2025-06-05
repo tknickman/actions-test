@@ -8,13 +8,6 @@ inputs:
   command:
     description: "The command to run"
     required: true
-  checkout-path:
-    description: "The path to checkout the repository to"
-    required: false
-  checkout-fetch-depth:
-    description: "Number of commits to fetch. 0 indicates all history for all branches and tags"
-    required: false
-    default: "1"
 runs:
   using: "node20"
   main: "dist/index.js"
