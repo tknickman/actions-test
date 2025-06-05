@@ -22,6 +22,24 @@ importers:
         specifier: ^5.3.0
         version: 5.8.3
 
+  actions/checkout: {}
+
+  actions/status:
+    dependencies:
+      '@actions/core':
+        specifier: ^1.10.0
+        version: 1.11.1
+      '@actions/github':
+        specifier: ^5.0.0
+        version: 5.1.1
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.17.57
+      typescript:
+        specifier: ^5.3.0
+        version: 5.8.3
+
 packages:
 
   '@actions/core@1.11.1':

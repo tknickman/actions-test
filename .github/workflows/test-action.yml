@@ -19,7 +19,7 @@ jobs:
         run: |
           echo "inputs=$(echo '{"sha":"'${{ github.event.client_payload.git.sha }}'"}' | jq -c '.')" >> $GITHUB_OUTPUT
 
-      - uses: ./
+      - uses: ./actions/status
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
