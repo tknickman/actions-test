@@ -1,13 +1,59 @@
-name: "Set Status and Run Command"
-description: "Sets a status on HEAD, runs a command, and updates status based on success or failure"
-author: "Vercel"
+name: 'Set Status and Run Command (Composite)'
+description: 'Sets a status on HEAD, checks out code, runs a command, updates status based on success/failure'
+author: 'Your Name'
+
 inputs:
+  github-token:
+    description: 'GitHub token for setting the status'
+    required: true
   status-name:
-    description: "The context name for the status"
+    description: 'The context name for the status'
     required: true
   command:
-    description: "The command to run"
+    description: 'The shell command to run'
     required: true
+
 runs:
-  using: "node20"
-  main: "dist/index.js"
+  using: 'composite'
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.client_payload.git.sha }}
+
+    - name: Set status to pending
+      run: |
+        gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
+          -f state="pending" \
+          -f context="${{ inputs.context-name }}" \
+          -f description="Command is running..."
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+
+    - name: Run the command
+      id: run_command
+      shell: bash
+      run: |
+        set -o pipefail
+        echo "Executing: ${{ inputs.command }}"
+        eval "${{ inputs.command }}"
+
+    - name: Set status to success
+      if: success()
+      run: |
+        gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
+          -f state="success" \
+          -f context="${{ inputs.context-name }}" \
+          -f description="Command succeeded!"
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+
+    - name: Set status to failure
+      if: failure()
+      run: |
+        gh api repos/${{ github.repository }}/statuses/${{ github.sha }} \
+          -f state="failure" \
+          -f context="${{ inputs.context-name }}" \
+          -f description="Command failed!"
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
