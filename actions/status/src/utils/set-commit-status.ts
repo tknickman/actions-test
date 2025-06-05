@@ -34,6 +34,15 @@ export async function setCommitStatus({
     await wait(5 * 1000);
   }
 
+  // debug items:
+  core.info(`context.repo.owner: ${context.repo.owner}`);
+  core.info(`context.repo.repo: ${context.repo.repo}`);
+  core.info(`context.runId: ${context.runId}`);
+  core.info(`context.job: ${context.job}`);
+  core.info(`context.workflow: ${context.workflow}`);
+  core.info(`context.eventName: ${context.eventName}`);
+  core.info(`context.payload: ${JSON.stringify(context.payload, null, 2)}`);
+
   const jobs = await octokit.rest.actions.listJobsForWorkflowRun({
     owner: context.repo.owner,
     repo: context.repo.repo,
