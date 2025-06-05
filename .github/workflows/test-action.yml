@@ -11,13 +11,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # ref: ${{ github.event.client_payload.git.sha }}
           fetch-depth: 1
 
-      - name: Prepare workflow inputs
-        id: prepare
-        run: |
-          echo "inputs=$(echo '{"sha":"'${{ github.event.client_payload.git.sha }}'"}' | jq -c '.')" >> $GITHUB_OUTPUT
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
 
       - uses: ./actions/status
         env:
