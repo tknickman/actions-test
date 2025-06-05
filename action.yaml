@@ -25,7 +25,6 @@ runs:
   steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      shell: bash
       with:
         ref: ${{ github.event.client_payload.git.sha }}
         path: ${{ inputs.checkout-path }}
