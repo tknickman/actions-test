@@ -25,19 +25,21 @@ runs:
       id: determine-ref
       shell: bash
       run: |
-        # Set environment variables for the script
-        export GITHUB_EVENT_NAME="${{ github.event_name }}"
-        export GITHUB_EVENT_CLIENT_PAYLOAD_GIT_SHA="${{ github.event.client_payload.git.sha }}"
-
-        # Call the script and capture output
-        output=$(./actions/checkout/scripts/determine-ref.sh "${{ inputs.ref }}")
-
-        # Extract the ref value and set it as output
-        ref=$(echo "$output" | grep "^ref=" | cut -d'=' -f2-)
-        echo "ref=$ref" >> "$GITHUB_OUTPUT"
-
-        # Print the status message (lines that don't start with ref=)
-        echo "$output" | grep -v "^ref=" || true
+        # If a ref is explicitly provided, use it
+        if [[ -n "${{ inputs.ref }}" ]]; then
+          echo "Using provided ref: ${{ inputs.ref }}"
+          echo "ref=${{ inputs.ref }}" >> "$GITHUB_OUTPUT"
+        # If the event is a repository_dispatch and the client_payload contains a SHA, use it
+        elif [[ "${{ github.event_name }}" == "repository_dispatch" && -n "${{ github.event.client_payload.git.sha }}" ]]; then
+          echo "Using client_payload SHA: ${{ github.event.client_payload.git.sha }}"
+          echo "ref=${{ github.event.client_payload.git.sha }}" >> "$GITHUB_OUTPUT"
+        else
+          echo "Using default ref (empty)"
+          echo "ref=" >> "$GITHUB_OUTPUT"
+        fi
+      env:
+        GITHUB_EVENT_NAME: ${{ github.event_name }}
+        GITHUB_EVENT_CLIENT_PAYLOAD_GIT_SHA: ${{ github.event.client_payload.git.sha }}
 
     - name: Checkout code
       uses: actions/checkout@v4
