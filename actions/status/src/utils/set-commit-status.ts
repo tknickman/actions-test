@@ -10,6 +10,7 @@ export async function setCommitStatus({
   stage: WorkflowStage;
 }): Promise<void> {
   const context = github.context;
+
   if (context.eventName !== "repository_dispatch") {
     core.warning(
       `This is not a repository_dispatch event: eventName=${context.eventName}`
