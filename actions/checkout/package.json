@@ -3,18 +3,5 @@
   "version": "0.0.1",
   "description": "GitHub action checks out the repository from the SHA received from a repository_dispatch event",
   "license": "MIT",
-  "author": "Vercel",
-  "main": "dist/index.js",
-  "scripts": {
-    "test": "jest"
-  },
-  "devDependencies": {
-    "@types/jest": "^30.0.0",
-    "@types/node": "^22.14.0",
-    "jest": "^29.7.0",
-    "ts-config": "workspace:*",
-    "ts-jest": "^29.1.2",
-    "ts-node": "~10.9.2",
-    "typescript": "5.7.3"
-  }
+  "author": "Vercel"
 }
