@@ -19,7 +19,8 @@ export async function setCommitStatus({
   }
 
   const sha = context.payload.client_payload?.git?.sha;
-  if (!sha) {
+  const environment = context.payload.client_payload?.environment;
+  if (!sha || !environment) {
     core.warning(
       "No SHA found in client_payload.git.sha. Skipping status update."
     );
@@ -28,7 +29,9 @@ export async function setCommitStatus({
 
   const token = core.getInput("github_token");
   const contextForStatus =
-    core.getInput("name") ?? `${context.workflow} / ${context.job}`;
+    core.getInput("name") ??
+    `${context.workflow} / ${context.job} (${environment})`;
+  core.info(`contextForStatus: ${contextForStatus}`);
   const octokit = github.getOctokit(token);
 
   if (stage === "post") {
@@ -63,7 +66,7 @@ export async function setCommitStatus({
 
   // debug job
   const state = getStatusForJob({ stage, job });
-  core.info(`Setting commit status for SHA: ${sha}, state: ${state}`);
+  core.debug(`Setting commit status for SHA: ${sha}, state: ${state}`);
 
   const resp = await octokit.rest.repos.createCommitStatus({
     owner: context.repo.owner,
