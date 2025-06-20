@@ -20,19 +20,18 @@ export async function setCommitStatus({
 
   const sha = context.payload.client_payload?.git?.sha;
   const environment = context.payload.client_payload?.environment;
-  if (!sha || !environment) {
+  const projectName = context.payload.client_payload?.project.name;
+  if (!sha || !environment || !projectName) {
     core.warning(
-      "No SHA found in client_payload.git.sha. Skipping status update."
+      "Missing required fields in client_payload. Skipping status update."
     );
     return;
   }
 
   const token = core.getInput("github_token");
-  core.info(JSON.stringify(context, null, 2));
-  const contextForStatus =
-    core.getInput("name") ??
-    `${context.workflow} / ${context.job} (${environment})`;
-  core.info(`contextForStatus: ${contextForStatus}`);
+  const defaultStatusName = `${context.workflow}/${context.job} (${projectName}@${sha} - ${environment})`;
+  const contextForStatus = core.getInput("name") || defaultStatusName;
+  core.debug(`status name: ${contextForStatus}`);
   const octokit = github.getOctokit(token);
 
   if (stage === "post") {
