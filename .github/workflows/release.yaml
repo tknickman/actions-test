@@ -4,13 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Tag name to create (e.g., v1.0.0)'
+        description: "Tag name to create (e.g., v1.0.0)"
         required: true
         type: string
       ref:
-        description: 'Commit SHA to tag'
+        description: "Commit SHA to tag"
         required: true
         type: string
+
+permissions:
+  contents: write
 
 jobs:
   tag:
@@ -32,7 +35,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install Dependencies
         id: pnpm-install
