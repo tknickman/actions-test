@@ -28,11 +28,15 @@ export async function setCommitStatus({
     return;
   }
 
+  const requiredContext = `(${projectName}@${sha.slice(
+    0,
+    7
+  )} - ${environment})`;
   const token = core.getInput("github_token");
-  const defaultStatusName = `${context.workflow}/${context.job} (${projectName}@${sha} - ${environment})`;
+  const defaultStatusName = `${context.workflow}/${context.job} ${requiredContext}`;
   const contextForStatus = core.getInput("name") || defaultStatusName;
-  core.debug(`status name: ${contextForStatus}`);
   const octokit = github.getOctokit(token);
+  core.debug(`status name: ${contextForStatus}`);
 
   if (stage === "post") {
     // Give time for steps to propagate conclusions
@@ -48,7 +52,7 @@ export async function setCommitStatus({
     per_page: 100,
   });
 
-  core.info(`jobs: ${JSON.stringify(jobs, null, 2)}`);
+  core.debug(`jobs: ${JSON.stringify(jobs, null, 2)}`);
   const octokitJob = jobs.data.jobs.find(
     (j: { name: string }) => j.name === context.job
   );
@@ -66,7 +70,9 @@ export async function setCommitStatus({
 
   // debug job
   const state = getStatusForJob({ stage, job });
-  core.debug(`Setting commit status for SHA: ${sha}, state: ${state}`);
+  core.debug(
+    `Setting commit status for SHA: ${sha}, state: ${state}, context: ${contextForStatus}`
+  );
 
   const resp = await octokit.rest.repos.createCommitStatus({
     owner: context.repo.owner,
