@@ -18,7 +18,6 @@ runs:
           exit 0
         fi
 
-        echo ""
         # Output the full client payload in a collapsible section
         echo "::group::📦 Raw Payload (Click to expand)"
         echo '${{ toJSON(github.event.client_payload) }}'
@@ -29,6 +28,13 @@ runs:
         echo "🔍 Details"
 
         # Output individual fields with prefixes
+        echo "::group::  - 4. 🚀 Deployment"
+        echo "🆔 Deployment ID: ${{ github.event.client_payload.id || 'None' }}"
+        echo "🌐 Deployment URL: ${{ github.event.client_payload.url || 'None' }}"
+        echo "📈 Deployment State: ${{ github.event.client_payload.state.type || 'None' }}"
+        echo "📋 Deployment State Details: ${{ github.event.client_payload.state.detail || 'N/A' }}"
+        echo "::endgroup::"
+
         echo "::group::  - 1. 🏗️ Project"
         echo "🆔 Project ID: ${{ github.event.client_payload.project.id || 'None' }}"
         echo "📝 Project Name: ${{ github.event.client_payload.project.name || 'None' }}"
@@ -42,13 +48,6 @@ runs:
         echo "🌿 Git Ref: ${{ github.event.client_payload.git.ref || 'None' }}"
         echo "🔗 Git SHA: ${{ github.event.client_payload.git.sha || 'None' }}"
         echo "✂️ Short SHA: ${{ github.event.client_payload.git.shortSha || 'None' }}"
-        echo "::endgroup::"
-
-        echo "::group::  - 4. 🚀 Deployment"
-        echo "🆔 Deployment ID: ${{ github.event.client_payload.id || 'None' }}"
-        echo "🌐 Deployment URL: ${{ github.event.client_payload.url || 'None' }}"
-        echo "📈 Deployment State: ${{ github.event.client_payload.state.type || 'None' }}"
-        echo "📋 Deployment State Details: ${{ github.event.client_payload.state.detail || 'N/A' }}"
         echo "::endgroup::"
 
         # Check for error information
