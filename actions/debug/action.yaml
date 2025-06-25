@@ -7,8 +7,11 @@ runs:
     - name: Debug Client Payload
       shell: bash
       run: |
+        # Debugging Vercel Repository Dispatch Client Payload
+
         echo ""
-        echo "🔍 Debugging Vercel Repository Dispatch Client Payload"
+        echo "🔍 Debugging Vercel Repository Dispatch Client Payload..."
+        echo ""
         echo ""
 
         # Check if this is a repository_dispatch event
