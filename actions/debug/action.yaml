@@ -26,26 +26,25 @@ runs:
         echo ""
 
         # output a header to indicate the individual fields
-        echo "🔍 Individual Fields"
-        echo ""
+        echo "🔍 Details"
 
         # Output individual fields with prefixes
-        echo "::group::  - 1. 🏗️ Project Details"
+        echo "::group::  - 1. 🏗️ Project"
         echo "🆔 Project ID: ${{ github.event.client_payload.project.id || 'None' }}"
         echo "📝 Project Name: ${{ github.event.client_payload.project.name || 'None' }}"
         echo "::endgroup::"
 
-        echo "::group::  - 2. 🌍 Environment Details"
+        echo "::group::  - 2. 🌍 Environment"
         echo "🌱 Environment: ${{ github.event.client_payload.environment || 'None' }}"
         echo "::endgroup::"
 
-        echo "::group::  - 3. 📚 Git Details"
+        echo "::group::  - 3. 📚 Git"
         echo "🌿 Git Ref: ${{ github.event.client_payload.git.ref || 'None' }}"
         echo "🔗 Git SHA: ${{ github.event.client_payload.git.sha || 'None' }}"
         echo "✂️ Short SHA: ${{ github.event.client_payload.git.shortSha || 'None' }}"
         echo "::endgroup::"
 
-        echo "::group::  - 4. 🚀 Deployment Details"
+        echo "::group::  - 4. 🚀 Deployment"
         echo "🆔 Deployment ID: ${{ github.event.client_payload.id || 'None' }}"
         echo "🌐 Deployment URL: ${{ github.event.client_payload.url || 'None' }}"
         echo "📈 Deployment State: ${{ github.event.client_payload.state.type || 'None' }}"
@@ -59,4 +58,6 @@ runs:
           echo "::endgroup::"
         fi
 
+        echo ""
         echo "🎉 Debug output complete!"
+        echo ""
