@@ -1,8 +1,8 @@
-name: 'Vercel Repository Dispatch - Debug'
-description: 'Debug action for Vercel repository dispatch deployment events. Useful for viewing the full payload from the event.'
+name: "Vercel Repository Dispatch - Debug"
+description: "Debug action for Vercel repository dispatch deployment events. Useful for viewing the full payload from the event."
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Debug Client Payload
       shell: bash
@@ -18,42 +18,42 @@ runs:
         fi
 
         echo "✅ Event type: ${{ github.event_name }}"
-        echo ""
-
         # Output the full client payload in a collapsible section
-        echo "::group::📦 Full Client Payload (Click to expand)"
+        echo "::group::📦 Raw Payload (Click to expand)"
         echo '${{ toJSON(github.event.client_payload) }}'
         echo "::endgroup::"
         echo ""
 
-        # Output individual fields with emoji prefixes
-        echo "::group::🏗️ Project Information"
-        echo "📝 Project Name: ${{ github.event.client_payload.project.name || 'N/A' }}"
-        echo "🆔 Project ID: ${{ github.event.client_payload.project.id || 'N/A' }}"
+        # output a header to indicate the individual fields
+        echo "::group::🔍 Individual Fields"
+        echo "::endgroup::"
+        echo ""
+        echo ""
+
+        # Output individual fields with prefixes
+        echo "::group::🏗️ Project Details"
+        echo "🆔 Project ID: ${{ github.event.client_payload.project.id || 'None' }}"
+        echo "📝 Project Name: ${{ github.event.client_payload.project.name || 'None' }}"
         echo "::endgroup::"
         echo ""
 
-        echo "::group::🌍 Environment"
-        echo "🌱 Environment: ${{ github.event.client_payload.environment || 'N/A' }}"
+        echo "::group::🌍 Environment Details"
+        echo "🌱 Environment: ${{ github.event.client_payload.environment || 'None' }}"
         echo "::endgroup::"
         echo ""
 
-        echo "::group::📚 Git Information"
-        echo "🌿 Git Ref: ${{ github.event.client_payload.git.ref || 'N/A' }}"
-        echo "🔗 Git SHA: ${{ github.event.client_payload.git.sha || 'N/A' }}"
-        echo "✂️ Short SHA: ${{ github.event.client_payload.git.shortSha || 'N/A' }}"
+        echo "::group::📚 Git Details"
+        echo "🌿 Git Ref: ${{ github.event.client_payload.git.ref || 'None' }}"
+        echo "🔗 Git SHA: ${{ github.event.client_payload.git.sha || 'None' }}"
+        echo "✂️ Short SHA: ${{ github.event.client_payload.git.shortSha || 'None' }}"
         echo "::endgroup::"
         echo ""
 
-        echo "::group::🚀 Deployment Information"
-        echo "🌐 Deployment URL: ${{ github.event.client_payload.url || 'N/A' }}"
-        echo "🆔 Deployment ID: ${{ github.event.client_payload.id || 'N/A' }}"
-        echo "::endgroup::"
-        echo ""
-
-        echo "::group::📊 State Information"
-        echo "📈 State Type: ${{ github.event.client_payload.state.type || 'N/A' }}"
-        echo "📋 State Detail: ${{ github.event.client_payload.state.detail || 'N/A' }}"
+        echo "::group::🚀 Deployment Details"
+        echo "🆔 Deployment ID: ${{ github.event.client_payload.id || 'None' }}"
+        echo "🌐 Deployment URL: ${{ github.event.client_payload.url || 'None' }}"
+        echo "📈 Deployment State: ${{ github.event.client_payload.state.type || 'None' }}"
+        echo "📋 Deployment State Details: ${{ github.event.client_payload.state.detail || 'N/A' }}"
         echo "::endgroup::"
         echo ""
 
