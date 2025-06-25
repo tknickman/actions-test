@@ -7,6 +7,7 @@ runs:
     - name: Debug Client Payload
       shell: bash
       run: |
+        echo ""
         echo "🔍 Debugging Vercel Repository Dispatch Client Payload"
         echo ""
 
@@ -17,7 +18,6 @@ runs:
           exit 0
         fi
 
-        echo "✅ Event type: ${{ github.event_name }}"
         echo ""
         # Output the full client payload in a collapsible section
         echo "::group::📦 Raw Payload (Click to expand)"
