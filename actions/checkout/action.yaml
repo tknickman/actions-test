@@ -1,4 +1,4 @@
-name: "Vercel Checkout"
+name: "Vercel Repository Dispatch Checkout"
 description: "Checkout for Vercel deployment events. Automatically checks out the ref from the SHA of the deployment."
 inputs:
   ref:
@@ -25,6 +25,7 @@ runs:
       id: determine-ref
       shell: bash
       run: |
+        # Determine the ref to checkout
         # If a ref is explicitly provided, use it
         if [[ -n "${{ inputs.ref }}" ]]; then
           echo "Using provided ref: ${{ inputs.ref }}"
