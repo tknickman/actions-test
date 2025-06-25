@@ -18,6 +18,7 @@ runs:
         fi
 
         echo "✅ Event type: ${{ github.event_name }}"
+        echo ""
         # Output the full client payload in a collapsible section
         echo "::group::📦 Raw Payload (Click to expand)"
         echo '${{ toJSON(github.event.client_payload) }}'
@@ -25,44 +26,37 @@ runs:
         echo ""
 
         # output a header to indicate the individual fields
-        echo "::group::🔍 Individual Fields"
-        echo "::endgroup::"
-        echo ""
+        echo "🔍 Individual Fields"
         echo ""
 
         # Output individual fields with prefixes
-        echo "::group::🏗️ Project Details"
+        echo "::group::  - 1. 🏗️ Project Details"
         echo "🆔 Project ID: ${{ github.event.client_payload.project.id || 'None' }}"
         echo "📝 Project Name: ${{ github.event.client_payload.project.name || 'None' }}"
         echo "::endgroup::"
-        echo ""
 
-        echo "::group::🌍 Environment Details"
+        echo "::group::  - 2. 🌍 Environment Details"
         echo "🌱 Environment: ${{ github.event.client_payload.environment || 'None' }}"
         echo "::endgroup::"
-        echo ""
 
-        echo "::group::📚 Git Details"
+        echo "::group::  - 3. 📚 Git Details"
         echo "🌿 Git Ref: ${{ github.event.client_payload.git.ref || 'None' }}"
         echo "🔗 Git SHA: ${{ github.event.client_payload.git.sha || 'None' }}"
         echo "✂️ Short SHA: ${{ github.event.client_payload.git.shortSha || 'None' }}"
         echo "::endgroup::"
-        echo ""
 
-        echo "::group::🚀 Deployment Details"
+        echo "::group::  - 4. 🚀 Deployment Details"
         echo "🆔 Deployment ID: ${{ github.event.client_payload.id || 'None' }}"
         echo "🌐 Deployment URL: ${{ github.event.client_payload.url || 'None' }}"
         echo "📈 Deployment State: ${{ github.event.client_payload.state.type || 'None' }}"
         echo "📋 Deployment State Details: ${{ github.event.client_payload.state.detail || 'N/A' }}"
         echo "::endgroup::"
-        echo ""
 
         # Check for error information
         if [[ -n "${{ github.event.client_payload.error }}" ]]; then
-          echo "::group::❌ Error Information"
+          echo "::group::  - 5. ❌ Error Information"
           echo "💥 Error: ${{ github.event.client_payload.error }}"
           echo "::endgroup::"
-          echo ""
         fi
 
         echo "🎉 Debug output complete!"
